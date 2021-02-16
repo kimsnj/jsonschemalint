@@ -95,13 +95,13 @@
 
             <div class="col-xs-12 col-md-6">
 
-                <validator identifier="schema" title="{{ 'SCHEMA' | translate }} :: {{$ctrl.currentMarkup.name}}, {{$ctrl.currentValidator.name}}" doc="$ctrl.getSchema()" validate="$ctrl.validateSchema" parse="$ctrl.parseMarkup" pretty-print="$ctrl.prettyPrint" success-message="'SCHEMA_VALID_MESSAGE' | translate:$ctrl.currentValidator" on-update-doc="$ctrl.onUpdateSchemaString(value)" on-update-obj="$ctrl.onUpdateSchemaObj(value)"></validator>
+                <validator identifier="schema" title="{{ 'SCHEMA' | translate }} :: {{$ctrl.currentMarkup.name}}, {{$ctrl.currentValidator.name}}" doc="$ctrl.getSchema()" validate="$ctrl.validateSchema" parse="$ctrl.parseSchema" pretty-print="$ctrl.prettyPrintSchema" success-message="'SCHEMA_VALID_MESSAGE' | translate:$ctrl.currentValidator" on-update-doc="$ctrl.onUpdateSchemaString(value)" on-update-obj="$ctrl.onUpdateSchemaObj(value)"></validator>
 
             </div>
 
             <div class="col-xs-12 col-md-6">
 
-                <validator identifier="document" title="{{ 'DOCUMENT' | translate }} :: {{$ctrl.currentMarkup.name}}" doc="$ctrl.getDocument()" validate="$ctrl.validateDocument" parse="$ctrl.parseMarkup" pretty-print="$ctrl.prettyPrint" success-message="'DOCUMENT_VALID_MESSAGE' | translate:$ctrl.currentValidator" on-update-doc="$ctrl.onUpdateDocumentString(value)" on-update-validity="$ctrl.onUpdateDocumentValidity(value)"></validator>
+                <validator identifier="document" title="{{ 'DOCUMENT' | translate }} :: {{$ctrl.currentMarkup.name}}" doc="$ctrl.getDocument()" validate="$ctrl.validateDocument" parse="$ctrl.parseDocument" pretty-print="$ctrl.prettyPrintDocument" success-message="'DOCUMENT_VALID_MESSAGE' | translate:$ctrl.currentValidator" on-update-doc="$ctrl.onUpdateDocumentString(value)" on-update-validity="$ctrl.onUpdateDocumentValidity(value)"></validator>
 
             </div>
 

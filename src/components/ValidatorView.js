@@ -7,8 +7,8 @@ var templateUrl = require('ngtemplate-loader?relativeTo=/src/!html-loader!./vali
 function ValidatorViewController($scope, $rootScope, $log, $http, $window, $q, $route, $location, $uibModal, $templateCache, gist, markupJson, markupYaml, validatorFactoryJSV, validatorFactoryAJV, alertService, textService) {
 
   var self = this;
-
-  this.parseMarkup = null;
+  this.parseSchema = null;
+  this.parseDocument = null;
   this.validateSchema = null;
   this.validateDocument = null;
 
@@ -73,6 +73,9 @@ function ValidatorViewController($scope, $rootScope, $log, $http, $window, $q, $
     }
   };
 
+  this.schemaService = markupYaml;
+  this.documentService = markupJson;
+
   this.about = function(event) {
     // Stop the link redirecting us to #
     event.preventDefault();
@@ -109,19 +112,6 @@ function ValidatorViewController($scope, $rootScope, $log, $http, $window, $q, $
       });
     }, function(errors) {
       alertService.alert({title: '{{ "ERROR_SAMPLE_LOADING" | translate }}', message: errors[0].message, btnClass: 'btn-danger'});
-    });
-    // Analytics
-    p.then(function() {
-      $window.ga('send', {
-        hitType: 'event',
-        eventCategory: 'Samples',
-        eventAction: 'Load',
-        eventLabel: ref
-      });
-    }, function(errors) {
-      $window.ga('send', 'exception', {
-        exDescription: 'sample-load-error :: ' + errors[0].message
-      });
     });
   };
 
@@ -169,18 +159,6 @@ function ValidatorViewController($scope, $rootScope, $log, $http, $window, $q, $
       $log.error(error);
       alertService.alert({title: '{{ "ERROR_GIST_LOADING" | translate }}', message: error, btnClass: 'btn-danger'});
     });
-    // Analytics
-    p.then(function() {
-      $window.ga('send', {
-        hitType: 'event',
-        eventCategory: 'Gists',
-        eventAction: 'Load'
-      });
-    }, function(error) {
-      $window.ga('send', 'exception', {
-        exDescription: 'gist-load-error :: ' + error
-      });
-    });
   };
 
   // Save a Gist and inform of success
@@ -199,18 +177,6 @@ function ValidatorViewController($scope, $rootScope, $log, $http, $window, $q, $
       alertService.alert({title: '{{ "ERROR_GIST_SAVING" | translate }}', message: error, btnClass: 'btn-danger'});
 
     });
-    // Analytics
-    p.then(function() {
-      $window.ga('send', {
-        hitType: 'event',
-        eventCategory: 'Gists',
-        eventAction: 'Save'
-      });
-    }, function(error) {
-      $window.ga('send', 'exception', {
-        exDescription: 'gist-save-error :: ' + error
-      });
-    });
   };
 
   // Change the selected spec version
@@ -224,15 +190,27 @@ function ValidatorViewController($scope, $rootScope, $log, $http, $window, $q, $
   };
 
   // Wrapper functions to be bound to the Validator inputs
-  this._parseMarkup = function(text) {
-    $log.debug('_parseMarkup');
-    return this.getCurrentMarkupService().then(function(service) {
+  this._parseSchema = function(text) {
+    $log.debug('_parseSchema');
+    return $q.when(this.schemaService).then(function(service) {
       return service.parse(text);
     });
   };
-  this._prettyPrint = function(obj) {
+  this._prettyPrintSchema = function(obj) {
     $log.debug('_prettyPrint', obj);
-    return this.getCurrentMarkupService().then(function(service) {
+    return $q.when(this.schemaService).then(function(service) {
+      return service.prettyPrint(obj);
+    });
+  };
+  this._parseDocument = function(text) {
+    $log.debug('_parseDocument');
+    return $q.when(this.documentService).then(function(service) {
+      return service.parse(text);
+    });
+  };
+  this._prettyPrintDocument = function(obj) {
+    $log.debug('_prettyPrintdocument', obj);
+    return $q.when(this.documentService).then(function(service) {
       return service.prettyPrint(obj);
     });
   };
@@ -293,8 +271,10 @@ function ValidatorViewController($scope, $rootScope, $log, $http, $window, $q, $
 
   $log.info('Selected markup language :: ' + $route.current.params.markupLanguage);
   self.currentMarkup = self.markupLanguages[$route.current.params.markupLanguage];
-  self.parseMarkup = angular.bind(self, self._parseMarkup);
-  self.prettyPrint = angular.bind(self, self._prettyPrint);
+  self.parseSchema = angular.bind(self, self._parseSchema);
+  self.parseDocument = angular.bind(self, self._parseDocument);
+  self.prettyPrintSchema = angular.bind(self, self._prettyPrintSchema);
+  self.prettyPrintDocument = angular.bind(self, self._prettyPrintDocument);
 
   if ($route.current.params.gist && self.loadedGistId != $route.current.params.gist) {
     $log.info('Loading gist :: ' + $route.current.params.gist, self.loadedGistId);

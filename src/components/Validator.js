@@ -101,19 +101,7 @@ function ValidatorController($scope, $element, $attrs, $log, $q, $window) {
       self.myDoc = text;
       self.update(self.myDoc);
     });
-    // Analytics
-    p.then(function() {
-      $window.ga('send', {
-        hitType: 'event',
-        eventCategory: 'Content',
-        eventAction: 'Format',
-        eventLabel: self.identifier
-      });
-    }, function(error) {
-      $window.ga('send', 'exception', {
-        exDescription: 'content-format-error :: ' + error.message
-      });
-    });
+
   };
 
 }

@@ -30,7 +30,6 @@ angular.module('app', [require('angular-sanitize'), require('angular-route'), re
 }).run(function($rootScope, $location, $window, $log) {
   $rootScope.$on('$routeChangeSuccess', function() {
     $log.info('Hash change, informing GA', $location.path());
-    $window.ga('send', 'pageview', $location.path());
   });
 });
 
